@@ -6,6 +6,8 @@ This extension will help when developing in the TypeScript language. By default,
 
 The extension also allows you to navigate to the file in the import by pressing `Ctrl/Cmd + click`.
 
+If you found a bug create a new issue on the [GitHub](https://github.com/mishannn/vscode-file-suggest/issues) please.
+
 ## Features
 
 - relative paths supported
