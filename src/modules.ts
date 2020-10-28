@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import { getDirectoryPath, isDirectoryPath, PATH_SEPARATOR_REGEXP } from "./fs";
+import { getDirectoryPath, isDirectoryPath } from "./fs";
 
 const MODULE_PATH_REGEXP = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*(\/.*)?$/;
 

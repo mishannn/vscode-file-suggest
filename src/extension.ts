@@ -10,6 +10,8 @@ import {
 import { getCompletetionItems } from "./completions";
 
 export function activate(context: ExtensionContext) {
+  console.log("Extension activated");
+
   const triggerCharacters = ["/"];
   const documentSelector = [
     { language: "typescript" },
@@ -28,6 +30,7 @@ export function activate(context: ExtensionContext) {
     },
     ...triggerCharacters
   );
+  console.log("Completion provider registered");
 
   context.subscriptions.push(provider);
 }

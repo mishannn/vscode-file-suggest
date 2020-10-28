@@ -22,8 +22,6 @@ export function getMappedPaths(
 ) {
   const pathsAliases = getPathsAliases(documentDirectoryPath);
 
-  console.log(pathsAliases);
-
   const mappedPaths: string[] = [];
   pathsAliases.forEach((pathAlias) => {
     if (pathAlias.alias === BASE_URL_ALIAS && !isRelativePath(userPath)) {

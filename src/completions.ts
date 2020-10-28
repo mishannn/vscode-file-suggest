@@ -31,10 +31,13 @@ export function getCompletetionItems(
   document: TextDocument,
   position: Position
 ) {
+  console.log("Completions triggered");
+
   const line = document.lineAt(position.line);
 
   const userPath = parseImportPath(line, position);
   if (!shouldTrigger(userPath)) {
+    console.log("Skip completion process");
     return undefined;
   }
 
@@ -71,8 +74,6 @@ export function getCompletetionItems(
     allDirectoryPaths.push(...modulesDirectoryPaths);
   }
 
-  // console.log(allDirectoryPaths);
-
   const allFileItems: FileItem[] = [];
   allDirectoryPaths.forEach((directoryPath) => {
     const fileNames = getFileNamesByDirectoryPath(
@@ -88,6 +89,8 @@ export function getCompletetionItems(
       })
     );
   });
+
+  console.log(`Found ${allFileItems.length} files in path ${userPath}`);
 
   return [...new Set(allFileItems)].map((item) => {
     const completionItem = new CompletionItem(
