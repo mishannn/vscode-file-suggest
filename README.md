@@ -16,10 +16,10 @@ This extension will help when developing in the TypeScript language. By default,
 
 ### Before installing
 
-![Before installing screenshot #1](screenshots/beforeScreenshot1.png "Before installing screenshot #1")
-![Before installing screenshot #2](screenshots/beforeScreenshot2.png "Before installing screenshot #2")
+![Before installing screenshot #1](screenshots/beforeScreenshot1.png)
+![Before installing screenshot #2](screenshots/beforeScreenshot2.png)
 
 ### After installing
 
-![After installing screenshot #1](screenshots/afterScreenshot1.png "After installing screenshot #1")
-![After installing screenshot #1](screenshots/afterScreenshot2.png "After installing screenshot #2")
+![After installing screenshot #1](screenshots/afterScreenshot1.png)
+![After installing screenshot #1](screenshots/afterScreenshot2.png)
