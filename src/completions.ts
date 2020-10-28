@@ -1,6 +1,8 @@
+import { relative } from "path";
 import {
   CompletionItem,
   CompletionItemKind,
+  MarkdownString,
   Position,
   TextDocument,
   workspace,
@@ -11,11 +13,18 @@ import {
   getDirectoryPath,
   getFileNamesByDirectoryPath,
   getMappedPaths,
+  getRootDirectoryPath,
   getTargetDirectoryPath,
 } from "./fs";
+import { getModulesDirectoryPaths } from "./modules";
+
+interface FileItem {
+  directoryPath: string;
+  fileName: string;
+}
 
 export function shouldTrigger(userPath: string) {
-  return userPath && userPath !== ".";
+  return userPath !== ".";
 }
 
 export function getCompletetionItems(
@@ -31,27 +40,70 @@ export function getCompletetionItems(
 
   const documentPath = document.fileName;
   const documentDirectoryPath = getDirectoryPath(documentPath);
+  const rootDirectoryPath = getRootDirectoryPath();
+
   const targetDirectoryPath = getTargetDirectoryPath(
     documentDirectoryPath,
     userPath
   );
+
   const mappedPaths = getMappedPaths(documentDirectoryPath, userPath);
-  const allDirectoryPaths = [targetDirectoryPath, ...mappedPaths];
 
-  console.log(allDirectoryPaths);
+  let modulesDirectoryPaths: string[] = [];
+  if (rootDirectoryPath) {
+    modulesDirectoryPaths = getModulesDirectoryPaths(
+      documentDirectoryPath,
+      rootDirectoryPath,
+      userPath
+    );
+  }
 
-  const allFileNames: string[] = [];
+  const allDirectoryPaths = [];
+  if (targetDirectoryPath) {
+    allDirectoryPaths.push(targetDirectoryPath);
+  }
+
+  if (mappedPaths.length) {
+    allDirectoryPaths.push(...mappedPaths);
+  }
+
+  if (modulesDirectoryPaths.length) {
+    allDirectoryPaths.push(...modulesDirectoryPaths);
+  }
+
+  // console.log(allDirectoryPaths);
+
+  const allFileItems: FileItem[] = [];
   allDirectoryPaths.forEach((directoryPath) => {
-    console.log(directoryPath);
     const fileNames = getFileNamesByDirectoryPath(
       directoryPath,
       EXCLUDED_EXTENSIONS
     );
-    console.log(fileNames);
-    allFileNames.push(...fileNames);
+    allFileItems.push(
+      ...fileNames.map((fileName) => {
+        return {
+          directoryPath,
+          fileName,
+        };
+      })
+    );
   });
 
-  return [...new Set(allFileNames)].map((fileName) => {
-    return new CompletionItem(fileName, CompletionItemKind.File);
+  return [...new Set(allFileItems)].map((item) => {
+    const completionItem = new CompletionItem(
+      item.fileName,
+      CompletionItemKind.File
+    );
+
+    const directoryPath = rootDirectoryPath
+      ? relative(rootDirectoryPath, item.directoryPath)
+      : item.directoryPath;
+    const documentation = new MarkdownString(
+      `**From:** \`${directoryPath}\`  \n*Found within \`File Suggest\` extension*`
+    );
+
+    completionItem.documentation = documentation;
+
+    return completionItem;
   });
 }

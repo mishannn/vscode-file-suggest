@@ -1,8 +1,10 @@
 import { existsSync, readdirSync, statSync } from "fs";
-import { isAbsolute, join, parse } from "path";
-import { getPathsAliases } from "./aliases";
+import { isAbsolute, join, normalize, parse, resolve } from "path";
+import { workspace } from "vscode";
+import { BASE_URL_ALIAS, getPathsAliases } from "./aliases";
 
 export const PATH_SEPARATOR_CHARACTERS = ["/", "\\"];
+export const PATH_SEPARATOR_REGEXP = /(\/|\\)/;
 
 export const EXCLUDED_EXTENSIONS = [
   ".ts",
@@ -20,10 +22,19 @@ export function getMappedPaths(
 ) {
   const pathsAliases = getPathsAliases(documentDirectoryPath);
 
+  console.log(pathsAliases);
+
   const mappedPaths: string[] = [];
   pathsAliases.forEach((pathAlias) => {
+    if (pathAlias.alias === BASE_URL_ALIAS && !isRelativePath(userPath)) {
+      mappedPaths.push(resolve(pathAlias.path, userPath));
+      return;
+    }
+
     if (userPath.indexOf(pathAlias.alias) === 0) {
-      mappedPaths.push(userPath.replace(pathAlias.alias, pathAlias.path));
+      mappedPaths.push(
+        normalize(userPath.replace(pathAlias.alias, pathAlias.path))
+      );
     }
   });
 
@@ -36,10 +47,16 @@ export function getTargetDirectoryPath(
 ) {
   let targetDirectoryPath: string;
 
-  if (!isAbsolutePath(userPath)) {
-    targetDirectoryPath = join(documentDirectoryPath, userPath);
-  } else {
+  if (isAbsolutePath(userPath)) {
     targetDirectoryPath = userPath;
+  } else if (isRelativePath(userPath)) {
+    targetDirectoryPath = resolve(documentDirectoryPath, userPath);
+  } else {
+    targetDirectoryPath = "";
+  }
+
+  if (!targetDirectoryPath) {
+    return targetDirectoryPath;
   }
 
   if (!isDirectoryPath(targetDirectoryPath, false)) {
@@ -72,6 +89,15 @@ export function isAbsolutePath(path: string) {
   return isAbsolute(path);
 }
 
+export function isRelativePath(path: string) {
+  return (
+    path === "." ||
+    path.indexOf("./") === 0 ||
+    path === ".." ||
+    path.indexOf("../") === 0
+  );
+}
+
 export function isFilePath(path: string) {
   return statSync(path).isFile();
 }
@@ -86,5 +112,14 @@ export function isDirectoryPath(path: string, existsRequired = true) {
 }
 
 export function getDirectoryPath(filePath: string) {
-  return parse(filePath).dir;
+  return normalize(parse(filePath).dir);
+}
+
+export function getRootDirectoryPath() {
+  const path = workspace.workspaceFolders?.[0].uri.path;
+  if (!path) {
+    return undefined;
+  }
+
+  return normalize(path);
 }

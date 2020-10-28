@@ -7,6 +7,8 @@ import {
 } from "typescript";
 import { getDirectoryPath } from "./fs";
 
+export const BASE_URL_ALIAS = "__BASE_URL__";
+
 export interface PathAlias {
   alias: string;
   path: string;
@@ -59,13 +61,18 @@ export function getPathsAliases(documentDirectoryPath: string) {
     return pathsAliases;
   }
 
-  const paths = compilerOptions.paths;
-  if (!paths) {
+  const baseUrl = compilerOptions.baseUrl;
+  if (!baseUrl) {
     return pathsAliases;
   }
 
-  const baseUrl = compilerOptions.baseUrl;
-  if (!baseUrl) {
+  pathsAliases.push({
+    alias: BASE_URL_ALIAS,
+    path: baseUrl,
+  });
+
+  const paths = compilerOptions.paths;
+  if (!paths) {
     return pathsAliases;
   }
 
