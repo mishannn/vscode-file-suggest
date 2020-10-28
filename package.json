@@ -1,18 +1,32 @@
 {
   "name": "vscode-file-suggest",
   "displayName": "File Suggest",
+  "icon": "icon.png",
   "publisher": "mishannn",
   "author": {
     "name": "mishannn",
     "email": "mixail.nekrasoff@gmail.com"
   },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mishannn/file-suggest"
+  },
   "description": "Suggest files with any extension in import or require expression",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.50.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
+  ],
+  "keywords": [
+    "typescript",
+    "path",
+    "suggest",
+    "autocomplete",
+    "intellisense",
+    "any files"
   ],
   "activationEvents": [
     "onLanguage:typescript",
