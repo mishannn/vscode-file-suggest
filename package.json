@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mishannn/file-suggest"
+    "url": "https://github.com/mishannn/vscode-file-suggest"
   },
   "description": "Suggest files with any extension in import or require expression",
   "version": "1.0.0",
