@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync } from "fs";
 import { isAbsolute, join, normalize, parse, resolve } from "path";
 import { workspace } from "vscode";
 import { BASE_URL_ALIAS, getPathsAliases } from "./aliases";
+import { getModulesDirectoryPaths } from "./modules";
 
 export const PATH_SEPARATOR_CHARACTERS = ["/", "\\"];
 export const PATH_SEPARATOR_REGEXP = /(\/|\\)/;
@@ -113,6 +114,10 @@ export function getDirectoryPath(filePath: string) {
   return normalize(parse(filePath).dir);
 }
 
+export function getFileName(filePath: string) {
+  return normalize(parse(filePath).base);
+}
+
 export function getRootDirectoryPath() {
   const path = workspace.workspaceFolders?.[0].uri.path;
   if (!path) {
@@ -120,4 +125,41 @@ export function getRootDirectoryPath() {
   }
 
   return normalize(path);
+}
+
+export function getPossiblePaths(
+  importInput: string,
+  documentDirectoryPath: string,
+  rootDirectoryPath?: string
+) {
+  const targetDirectoryPath = getTargetDirectoryPath(
+    documentDirectoryPath,
+    importInput
+  );
+
+  const mappedPaths = getMappedPaths(documentDirectoryPath, importInput);
+
+  let modulesDirectoryPaths: string[] = [];
+  if (rootDirectoryPath) {
+    modulesDirectoryPaths = getModulesDirectoryPaths(
+      documentDirectoryPath,
+      rootDirectoryPath,
+      importInput
+    );
+  }
+
+  const allDirectoryPaths = [];
+  if (targetDirectoryPath) {
+    allDirectoryPaths.push(targetDirectoryPath);
+  }
+
+  if (mappedPaths.length) {
+    allDirectoryPaths.push(...mappedPaths);
+  }
+
+  if (modulesDirectoryPaths.length) {
+    allDirectoryPaths.push(...modulesDirectoryPaths);
+  }
+
+  return allDirectoryPaths;
 }

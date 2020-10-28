@@ -5,11 +5,11 @@ import {
   MarkdownString,
   Position,
   TextDocument,
-  workspace,
 } from "vscode";
-import { parseImportPath } from "./document";
+import { parseImportInput } from "./document";
 import {
   EXCLUDED_EXTENSIONS,
+  getPossiblePaths,
   getDirectoryPath,
   getFileNamesByDirectoryPath,
   getMappedPaths,
@@ -35,8 +35,8 @@ export function getCompletetionItems(
 
   const line = document.lineAt(position.line);
 
-  const userPath = parseImportPath(line, position);
-  if (!shouldTrigger(userPath)) {
+  const importInput = parseImportInput(line, position);
+  if (!shouldTrigger(importInput)) {
     console.log("Skip completion process");
     return undefined;
   }
@@ -45,52 +45,29 @@ export function getCompletetionItems(
   const documentDirectoryPath = getDirectoryPath(documentPath);
   const rootDirectoryPath = getRootDirectoryPath();
 
-  const targetDirectoryPath = getTargetDirectoryPath(
+  const possiblePaths = getPossiblePaths(
+    importInput,
     documentDirectoryPath,
-    userPath
+    rootDirectoryPath
   );
 
-  const mappedPaths = getMappedPaths(documentDirectoryPath, userPath);
-
-  let modulesDirectoryPaths: string[] = [];
-  if (rootDirectoryPath) {
-    modulesDirectoryPaths = getModulesDirectoryPaths(
-      documentDirectoryPath,
-      rootDirectoryPath,
-      userPath
-    );
-  }
-
-  const allDirectoryPaths = [];
-  if (targetDirectoryPath) {
-    allDirectoryPaths.push(targetDirectoryPath);
-  }
-
-  if (mappedPaths.length) {
-    allDirectoryPaths.push(...mappedPaths);
-  }
-
-  if (modulesDirectoryPaths.length) {
-    allDirectoryPaths.push(...modulesDirectoryPaths);
-  }
-
   const allFileItems: FileItem[] = [];
-  allDirectoryPaths.forEach((directoryPath) => {
+  possiblePaths.forEach((possiblePath) => {
     const fileNames = getFileNamesByDirectoryPath(
-      directoryPath,
+      possiblePath,
       EXCLUDED_EXTENSIONS
     );
     allFileItems.push(
       ...fileNames.map((fileName) => {
         return {
-          directoryPath,
+          directoryPath: possiblePath,
           fileName,
         };
       })
     );
   });
 
-  console.log(`Found ${allFileItems.length} files in path ${userPath}`);
+  console.log(`Found ${allFileItems.length} files in path ${importInput}`);
 
   return [...new Set(allFileItems)].map((item) => {
     const completionItem = new CompletionItem(
