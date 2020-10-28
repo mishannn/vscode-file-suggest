@@ -4,12 +4,15 @@
 
 This extension will help when developing in the TypeScript language. By default, VS Code does not support import hints for paths to files with extensions other than JavaScript or Typescript. This extension will fix this problem.
 
+The extension also allows you to navigate to the file in the import by pressing `Ctrl/Cmd + click`.
+
 ## Features
 
 - relative paths supported
 - absolute paths supported
 - alias paths supported (`paths` property from `tsconfig.json`)
 - `node_modules` paths supported
+- navigate to the file in the import by pressing `Ctrl/Cmd + click` supported
 - zero-configuration
 
 ## Installation
