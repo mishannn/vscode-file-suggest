@@ -12,6 +12,10 @@ This extension will help when developing in the TypeScript language. By default,
 - `node_modules` paths supported
 - zero-configuration
 
+## Installation
+
+Install extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mishannn.vscode-file-suggest).
+
 ## Screenshots
 
 ### Before installing

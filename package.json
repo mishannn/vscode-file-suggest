@@ -13,7 +13,7 @@
     "url": "https://github.com/mishannn/vscode-file-suggest"
   },
   "description": "Suggest files with any extension in import or require expression",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.50.0"
   },
