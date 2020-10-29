@@ -12,11 +12,8 @@ import {
   getPossiblePaths,
   getDirectoryPath,
   getFileNamesByDirectoryPath,
-  getMappedPaths,
   getRootDirectoryPath,
-  getTargetDirectoryPath,
 } from "./fs";
-import { getModulesDirectoryPaths } from "./modules";
 
 interface FileItem {
   directoryPath: string;
@@ -36,7 +33,7 @@ export function getCompletetionItems(
   const line = document.lineAt(position.line);
 
   const importInput = parseImportInput(line, position);
-  if (!shouldTrigger(importInput)) {
+  if (importInput === undefined || !shouldTrigger(importInput)) {
     console.log("Skip completion process");
     return undefined;
   }

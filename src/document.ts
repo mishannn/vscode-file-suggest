@@ -19,7 +19,7 @@ export function parseImportInput(line: TextLine, position: Position) {
     return dynamicImportMatch[2];
   }
 
-  return "";
+  return undefined;
 }
 
 export function parseImportPath(line: TextLine): ImportPath | undefined {

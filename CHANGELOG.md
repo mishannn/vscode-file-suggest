@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- fixed bug due to which the extension suggest files when input occurs outside the import expression
+
 ## 1.1.0
 
 - added the ability to navigate to a file by pressing `Ctrl/Cmd + click`
